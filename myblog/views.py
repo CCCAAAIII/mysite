@@ -84,7 +84,9 @@ def register(request):
             email = request.POST.get('email')
             password = request.POST.get('password')
             password = make_password(password)
-            u = User(username=username, email=email, password=password)
+            head_image = request.POST.get('headimage')
+            print(head_image)
+            u = User(username=username, email=email, password=password,avatar=head_image)
             u.save()
             return redirect(reverse('myblog:registersuccess'))
         except Exception as e:
@@ -183,6 +185,16 @@ def check_code(request):
     return HttpResponse(f.getvalue())
 
 
+def showimage(request):
+    id = request.session['id']
+    image = User.objects.get(id=id).avatar
+    print(image.url)
+    print(image)
+    print(image.path)
+    return HttpResponse(image.url)
+    # image = User.objects.get(id=1).avatar
+
+
 def search_articles(request):
     pass
 
@@ -203,8 +215,8 @@ def test(request):
 #     except Exception as e:
 #         print(e)
 def formtest(request):
-    if request.method=='GET':
+    if request.method == 'GET':
         form = LoginForm()
-        return render(request, 'myblog/testfrom.html',{'form':form})
-    elif request.method=='POST':
+        return render(request, 'myblog/testfrom.html', {'form': form})
+    elif request.method == 'POST':
         return redirect(reverse('myblog:login'))

@@ -17,6 +17,7 @@ urlpatterns = [
     url(r'^articledelete/(\d+)/$',views.articledelete,name='articledelete'),
     url(r'^code/$',views.check_code,name='check_code'),
     url(r'^test/$',views.test,name='test'),
-    url(r'^formtest/$',views.formtest,name='formtest')
+    url(r'^formtest/$',views.formtest,name='formtest'),
+    url(r'^showimage/$',views.showimage,name='showimage'),
 
 ]

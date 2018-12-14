@@ -5,6 +5,7 @@ from tinymce.models import HTMLField
 # Create your models here.
 
 class User(models.Model):
+    avatar = models.ImageField(upload_to='upload/', null=True)
     id = models.AutoField(primary_key=True)
     email = models.CharField(max_length=50, unique=True)
     password = models.CharField(max_length=255)
