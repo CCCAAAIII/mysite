@@ -1,0 +1,29 @@
+{% extends "myblog/base.html" %}
+{% block  title %}
+    主页
+{% endblock %}
+{% block blogmain %}
+ <form action="{% url 'myblog:addarticle' %}" method="post">
+    {% csrf_token %}
+    <label style="display: inline-block"> title:</label>
+    <input  type="text" name="title" id="title" required style="width: 665px"/>
+    <br>
+    <label for="content">content:</label>
+
+    <textarea rows="3" cols="20" name="content" id="content" ></textarea>
+
+    <input type="submit" value="发表">
+</form>
+ <script src="/static/tiny_mce/tiny_mce.js"></script>
+<script>
+    tinyMCE.init({
+        "mode":'textareas',
+        'theme':'advanced',
+        'width':700,
+        'height':400,
+
+    })
+</script>
+{% endblock %}
+
+

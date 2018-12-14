@@ -1,0 +1,33 @@
+{% extends "myblog/base.html" %}
+{% block  title %}
+   detail
+{% endblock %}
+{% block blogmain %}
+<table class="table table-light">
+
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">标题</th>
+      <th scope="col">时间</th>
+      <th colspan="2">操作</th>
+    </tr>
+  </thead>
+  <tbody>
+      {% for i in article_list %}
+    <tr>
+      <th scope="row">{{ i.id }}</th>
+      <td><a href="{% url 'myblog:articledetail' i.id %}">{{ i.title}}</a></td>
+     <td>{{ i.pub_date }}</td>
+       <td><a href="{% url 'myblog:articleedit' i.id %}">edit</a></td>
+       <td><a href="{% url 'myblog:articledelete' i.id %}">delete</a></td>
+    </tr>
+  </tbody>
+      {% endfor %}
+</table>
+
+
+<a href="{% url 'myblog:index' %}"> 返回</a>
+{% endblock %}
+
+

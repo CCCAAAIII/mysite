@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>test</title>
+    {% load static %}
+    <script src="{% static 'myblog/js/jquery-2.1.4.js' %}"></script>
+</head>
+<body>
+<button id="click">click</button>
+<script>
+ $('#click').on('click',function () {
+     $.ajax({
+         url:'/myblog/test/',
+         type:'POST',
+         dataType:'JSON',
+         success:function (data) {
+        alert(data[1]['fields']['title'])
+         }
+     })
+ })
+</script>
+</body>
+</html>
