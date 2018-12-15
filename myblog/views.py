@@ -85,7 +85,7 @@ def register(request):
             password = request.POST.get('password')
             password = make_password(password)
             head_image = request.POST.get('headimage')
-            print(head_image)
+            print('i',head_image)
             u = User(username=username, email=email, password=password,avatar=head_image)
             u.save()
             return redirect(reverse('myblog:registersuccess'))
