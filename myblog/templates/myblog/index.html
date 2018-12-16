@@ -2,7 +2,7 @@
 {% block  title %}
     主页
 {% endblock %}
-{% block blogmain %}s
+{% block blogmain %}
  <div class="blog-post">
                 <h2 class="blog-post-title">{{ article.title }}</h2>
                 <p class="blog-post-meta"> {{ article.publish_date }}</p>
@@ -11,6 +11,19 @@
                 </p>
 
             </div><!-- /.blog-post -->
+ {% if has_prev %}
+     上一篇：
+    <a href="{% url 'myblog:articledetail' blog_prev.id %}" rel="prev" title="{{ blog_prev.title }}">
+        <i class="fa fa-chevron-left"></i> {{ blog_prev.title }}
+    </a>
+{% endif %}
+{% if has_next %}
+    下一篇：
+     <a href="{% url 'myblog:articledetail' blog_next.id %}" rel="next" title="{{ blog_next.title }}">
+        {{ blog_next.title }} <i class="fa fa-chevron-right"></i>
+     </a>
+{% endif %}
+
 {% endblock %}
 
 

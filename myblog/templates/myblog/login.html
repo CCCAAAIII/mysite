@@ -17,8 +17,18 @@
     <link href="{% static 'myblog/css/signin.css' %}" rel="stylesheet">
 </head>
 
-<body class="text-center">
-<form class="form-signin" method="post" action="{% url 'myblog:login' %}" >
+<body >
+<div class="container">
+    <div class="row">
+    <div class="col-md-12" >
+          <a class="btn btn-sm btn-outline-secondary" href="{% url 'myblog:register' %}" style="float: right">register</a>
+
+    </div>
+
+</div>
+<div class="row">
+    <div class="col-md-12 ">
+        <form class="form-signin" method="post" action="{% url 'myblog:login' %}" >
    {% csrf_token %}
 
     <img class="mb-4" src="{% static 'myblog/image/bootstrap-solid.svg' %}" alt="" width="72" height="72">
@@ -27,13 +37,19 @@
     <input type="email" id="inputEmail" name = "e" class="form-control" placeholder="Email address" required autofocus>
     <label for="inputPassword" class="sr-only">Password</label>
     <input type="password" name="pwd" id="inputPassword" class="form-control" placeholder="Password" required>
-    <div class="checkbox mb-3">
-        <label>
-            <input type="checkbox" value="remember-me"> Remember me
-        </label>
-    </div>
+{#    <div class="checkbox mb-3">#}
+{#        <label>#}
+{#            <input type="checkbox" value="remember-me"> Remember me#}
+{#        </label>#}
+{#    </div>#}
     <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
     <p class="mt-5 mb-3 text-muted">&copy; 2017-2018</p>
 </form>
+    </div>
+</div>
+</div>
+
+
+
 </body>
 </html>

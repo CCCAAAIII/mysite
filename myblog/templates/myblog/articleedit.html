@@ -1,10 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>edit</title>
-</head>
-<body>
+{% extends 'myblog/base.html' %}
+{% block title %}
+edit
+{% endblock %}
+{% block blogmain %}
 {% if article != None %}
 <form action="{% url 'myblog:articleedit' article.id %}" method="post">
     {% csrf_token %}
@@ -31,11 +29,10 @@
     tinyMCE.init({
         "mode":'textareas',
         'theme':'advanced',
-        'width':800,
-        'height':600,
+        'width':700,
+        'height':400,
 
     })
     </script>
 {% endif %}
-</body>
-</html>
+{% endblock %}

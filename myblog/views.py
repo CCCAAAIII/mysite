@@ -12,6 +12,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.core.serializers import serialize
 from django.db import transaction
 from .forms import LoginForm
+from django.forms.models import model_to_dict
 
 
 # Create your views here.
@@ -33,12 +34,34 @@ def logincheck(func, *args, **kwargs):
 
 @logincheck
 def index(request):
+    # print(request.session['user'].id)
     print(request.session['email'])
     id = request.session['id']
     print(id)
-    lastarticle = Article.objects.filter(user_id=id).first()
+    lastarticle = Article.objects.filter(user_id=id, is_delete=False).order_by('pub_date').last()
     print(lastarticle)
-    return render(request, 'myblog/index.html', {'article': lastarticle})
+    # 实现博客上一篇与下一篇功能
+    has_prev = False
+    has_next = False
+    blog_prev = None
+    blog_next = None
+    pre1 = Article.objects.filter(user_id=id, is_delete=False, id__lt=lastarticle.id)
+    nex1 = Article.objects.filter(user_id=id, is_delete=False, id__gt=lastarticle.id)
+    # pre = pre1.first()
+    print(pre1)
+    print(len(nex1))
+    if len(pre1) != 0:
+        has_prev = True
+        blog_prev = pre1.last()
+
+    if len(nex1) != 0:
+        has_next = True
+        blog_next = nex1.first()
+    print(blog_prev)
+    print(blog_next)
+    return render(request, 'myblog/index.html',
+                  {'article': lastarticle, 'blog_prev': blog_prev, 'blog_next': blog_next, 'has_prev': has_prev,
+                   'has_next': has_next})
 
 
 def login(request):
@@ -51,9 +74,14 @@ def login(request):
             u = User.objects.get(email=email)
             if u is not None:
                 if check_password(pwd, u.password):
-                    print(u, u.id, u.email, u.password)
+                    # print(u, u.id, u.email, u.password)
+                    # u1 = serialize('json',[u,])
+                    # print(type(u1))
+                    # request.session['user']=model_to_dict(u)
+                    # request.session['user']=model_to_dict(u)
                     request.session['email'] = u.email
                     request.session['id'] = u.id
+                    request.session['username'] = u.username
 
                     request.session.set_expiry(0)
                     return redirect(reverse('myblog:index'))
@@ -85,8 +113,8 @@ def register(request):
             password = request.POST.get('password')
             password = make_password(password)
             head_image = request.POST.get('headimage')
-            print('i',head_image)
-            u = User(username=username, email=email, password=password,avatar=head_image)
+            print('i', head_image)
+            u = User(username=username, email=email, password=password, avatar=head_image)
             u.save()
             return redirect(reverse('myblog:registersuccess'))
         except Exception as e:
@@ -138,7 +166,27 @@ def articledetail(request, id):
     print(id)
     try:
         article = Article.objects.get(id=id)
-        return render(request, 'myblog/articledetail.html', {'article': article})
+        user_id = request.session['id']
+        # 实现博客上一篇与下一篇功能
+        has_prev = False
+        has_next = False
+        blog_prev = None
+        blog_next = None
+        pre1 = Article.objects.filter(user_id=user_id, is_delete=False, id__lt=id)
+        nex1 = Article.objects.filter(user_id=user_id, is_delete=False, id__gt=id)
+        # pre = pre1.first()
+        if len(pre1) != 0:
+            has_prev = True
+            blog_prev = pre1.last()
+
+        if len(nex1) != 0:
+            has_next = True
+            blog_next = nex1.first()
+        print(blog_prev)
+        print(blog_next)
+        return render(request, 'myblog/articledetail.html',
+                      {'article': article, 'blog_prev': blog_prev, 'blog_next': blog_next, 'has_prev': has_prev,
+                       'has_next': has_next, })
 
     except Exception as e:
         print(e)
@@ -220,3 +268,8 @@ def formtest(request):
         return render(request, 'myblog/testfrom.html', {'form': form})
     elif request.method == 'POST':
         return redirect(reverse('myblog:login'))
+
+
+def logout(request):
+    request.session.flush()
+    return redirect(reverse('myblog:login'))

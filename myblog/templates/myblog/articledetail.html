@@ -1,10 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>detail</title>
-</head>
-<body>
+{% extends 'myblog/base.html' %}
+{% block title %}
+articledetail
+{% endblock %}
+{% block blogmain %}
 
 <h1>{{ article.title }}</h1>
 <small>
@@ -13,6 +11,18 @@
 <p>
     {{ article.content | safe}}
 </p>
-<a href="{% url 'myblog:showarticlelist' %}">返回文章列表</a>
-</body>
-</html>
+
+
+ {% if has_prev %}
+     上一篇：
+    <a href="{% url 'myblog:articledetail' blog_prev.id %}" rel="prev" title="{{ blog_prev.title }}">
+        <i class="fa fa-chevron-left"></i> {{ blog_prev.title }}
+    </a>
+{% endif %}
+{% if has_next %}
+    下一篇：
+     <a href="{% url 'myblog:articledetail' blog_next.id %}" rel="next" title="{{ blog_next.title }}">
+        {{ blog_next.title }} <i class="fa fa-chevron-right"></i>
+     </a>
+{% endif %}
+{% endblock %}

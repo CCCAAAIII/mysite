@@ -19,5 +19,6 @@ urlpatterns = [
     url(r'^test/$',views.test,name='test'),
     url(r'^formtest/$',views.formtest,name='formtest'),
     url(r'^showimage/$',views.showimage,name='showimage'),
+    url(r'^logout/$',views.logout,name='logout')
 
 ]
