@@ -30,8 +30,10 @@
 
         <div class="col-md-7 order-md-1">
             <h4 class="mb-3">Billing address</h4>
-            <form class="needs-validation" novalidate method="post" action="{% url 'myblog:register' %}" >
-                {% csrf_token %}
+            <form class="needs-validation" novalidate method="post" action="{% url 'myblog:register' %}"
+                  enctype="multipart/form-data">
+{#                {% csrf_token %}#}
+                <input id="csr" type='hidden' name='csrfmiddlewaretoken' value='3YUfvfPYQHEMpZlh8zXQv6BSksOn3XLBUCXysjURGEBt3Ock1Z3himl7gpkJkz1y' />
                 <div class="mb-3">
                     <label for="username">Username</label>
                     <div class="input-group">
@@ -50,6 +52,7 @@
                     <label for="email">Email <span class="text-muted">(Optional)</span></label>
                     <input type="email" class="form-control" id="email" placeholder="you@example.com" name="email"
                            required>
+                    <p id="p"></p>
                     <div class="invalid-feedback">
                         Please enter a valid email address for shipping updates.
                     </div>
@@ -65,12 +68,12 @@
                         Please enter a valid password
                     </div>
                 </div>
-{#                <div class="mb-3">#}
-{#                    <label for="headimage">上传头像</label>#}
-{#                <input type="file" name="headimage" id="headimage">#}
-{#                </div>#}
+                <div class="mb-3">
+                    <label for="headimage">上传头像</label>
+                    <input type="file" name="headimage" id="headimage">
+                </div>
                 <hr class="mb-4">
-                <button class="btn btn-primary btn-lg btn-block" type="submit">Continue to checkout</button>
+                <button id='btn_submit' class="btn btn-primary btn-lg btn-block" type="submit">Continue to checkout</button>
             </form>
         </div>
     </div>
@@ -95,6 +98,40 @@
 <script src="{% static 'myblog/js/popper.min.js' %}"></script>
 <script src="{% static 'myblog/js/bootstrap.min.js' %}"></script>
 <script src="{% static 'myblog/js/holder.min.js' %}"></script>
+<script src="{% static 'myblog/js/jquery-2.1.4.js' %}"></script>
+<script>
+
+    $(function () {
+        $("#email").bind('keyup', function () {
+
+            email = $("#email").val()
+            console.log(email)
+            csrf = $('#csr').val()
+            $.post('/myblog/checkusername/',{
+                'data':email,
+
+                 'csrfmiddlewaretoken': csrf,
+            },
+                function (data) {
+                if (data.msg=='0'){
+                    $('#btn_submit').attr('disabled',true)
+                    m = '已存在'
+                }
+                else {
+                    $('#btn_submit').attr('disabled',false)
+                    m = 'ok'
+                }
+
+                $('#p').text(m)
+
+                    {#console.log(typeof(data))#}
+                    
+                }
+            )
+
+        })
+    })
+</script>
 <script>
     // Example starter JavaScript for disabling form submissions if there are invalid fields
     (function () {
@@ -103,6 +140,7 @@
         window.addEventListener('load', function () {
             // Fetch all the forms we want to apply custom Bootstrap validation styles to
             var forms = document.getElementsByClassName('needs-validation');
+
 
             // Loop over them and prevent submission
             var validation = Array.prototype.filter.call(forms, function (form) {
