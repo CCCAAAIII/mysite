@@ -3,9 +3,10 @@ from django.core.urlresolvers import reverse
 from myblog.models import User
 from myblog.models import Article
 from django.contrib.auth.hashers import make_password, check_password
+from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from django.http import HttpResponse, JsonResponse
-import time
+import json
 from . import utils
 from io import BytesIO
 from django.views.decorators.csrf import csrf_exempt
@@ -32,6 +33,8 @@ def logincheck(func, *args, **kwargs):
     return wrapper
 
 
+
+# @login_required(login_url='/myblog/login/')
 @logincheck
 def index(request):
     # print(request.session['user'].id)
@@ -45,23 +48,27 @@ def index(request):
     has_next = False
     blog_prev = None
     blog_next = None
-    pre1 = Article.objects.filter(user_id=id, is_delete=False, id__lt=lastarticle.id)
-    nex1 = Article.objects.filter(user_id=id, is_delete=False, id__gt=lastarticle.id)
-    # pre = pre1.first()
-    print(pre1)
-    print(len(nex1))
-    if len(pre1) != 0:
-        has_prev = True
-        blog_prev = pre1.last()
+    msg = False
+    if lastarticle is not None:
+        msg = True
+        pre1 = Article.objects.filter(user_id=id, is_delete=False, id__lt=lastarticle.id)
+        nex1 = Article.objects.filter(user_id=id, is_delete=False, id__gt=lastarticle.id)
+        # pre = pre1.first()
+        print(pre1)
+        print(len(nex1))
+        if len(pre1) != 0:
+            has_prev = True
+            blog_prev = pre1.last()
 
-    if len(nex1) != 0:
-        has_next = True
-        blog_next = nex1.first()
-    print(blog_prev)
-    print(blog_next)
+        if len(nex1) != 0:
+            has_next = True
+            blog_next = nex1.first()
+        print(blog_prev)
+        print(blog_next)
+
     return render(request, 'myblog/index.html',
                   {'article': lastarticle, 'blog_prev': blog_prev, 'blog_next': blog_next, 'has_prev': has_prev,
-                   'has_next': has_next})
+                   'has_next': has_next, 'msg': msg})
 
 
 def login(request):
@@ -78,7 +85,8 @@ def login(request):
                     # u1 = serialize('json',[u,])
                     # print(type(u1))
                     # request.session['user']=model_to_dict(u)
-                    # request.session['user']=model_to_dict(u)
+                    request.session['user'] = model_to_dict(u)
+                    print(request.session['user'])
                     request.session['email'] = u.email
                     request.session['id'] = u.id
                     request.session['username'] = u.username
@@ -105,6 +113,16 @@ def loginfault(request):
     return render(request, 'myblog/loginfault.html')
 
 
+def checkusername(request):
+    email = request.POST.get('data')
+    rs = User.objects.filter(email=email)
+    if len(rs) > 0:
+        msg = '0'
+    else:
+        msg = '1'
+    return JsonResponse({'msg': msg})
+
+
 def register(request):
     if request.method == 'POST':
         try:
@@ -112,15 +130,23 @@ def register(request):
             email = request.POST.get('email')
             password = request.POST.get('password')
             password = make_password(password)
-            head_image = request.POST.get('headimage')
-            print('i', head_image)
-            u = User(username=username, email=email, password=password, avatar=head_image)
-            u.save()
-            return redirect(reverse('myblog:registersuccess'))
+            try:
+                head_image = request.FILES['headimage']
+                print(head_image)
+                u = User(username=username, email=email, password=password, avatar=head_image)
+                u.save()
+                return redirect(reverse('myblog:registersuccess'))
+            except Exception as e:
+                u = User(username=username, email=email, password=password)
+                u.save()
+                return redirect(reverse('myblog:registersuccess'))
         except Exception as e:
-            print(e)
+            print('eeeeeee',e)
+            print('iiiiiiiiiiiiii111  ', head_image)
+
             return redirect(reverse('myblog:registerfault'))
     else:
+
         return render(request, 'myblog/register.html')
 
 
@@ -236,10 +262,10 @@ def check_code(request):
 def showimage(request):
     id = request.session['id']
     image = User.objects.get(id=id).avatar
-    print(image.url)
-    print(image)
-    print(image.path)
-    return HttpResponse(image.url)
+    # print(image.url)
+    # print(image)
+    # print(image.path)
+    return HttpResponse(image)
     # image = User.objects.get(id=1).avatar
 
 
