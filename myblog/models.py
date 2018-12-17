@@ -1,15 +1,16 @@
 from django.db import models
 from tinymce.models import HTMLField
-
+import os
 
 # Create your models here.
 
 class User(models.Model):
-    avatar = models.ImageField(upload_to='', null=True)
+
     id = models.AutoField(primary_key=True)
     email = models.CharField(max_length=50, unique=True)
     password = models.CharField(max_length=255)
     username = models.CharField(max_length=50)
+    avatar = models.ImageField(upload_to=os.path.join('myblog','image'), null=True,default='myblog/image/1.png' )
 
     def __str__(self):
         return self.username
