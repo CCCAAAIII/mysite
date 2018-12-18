@@ -19,6 +19,7 @@ urlpatterns = [
     url(r'^test/$',views.test,name='test'),
     url(r'^formtest/$',views.formtest,name='formtest'),
     url(r'^showimage/$',views.showimage,name='showimage'),
-    url(r'^logout/$',views.logout,name='logout')
-
+    url(r'^logout/$',views.logout,name='logout'),
+    url(r'^checkusername/$',views.checkusername,name='checkusername'),
+    url(r'^check_username_pwd/$',views.check_username_pwd,name='check_username_pwd')
 ]

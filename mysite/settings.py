@@ -136,3 +136,18 @@ STATICFILES_DIRS = [
 ]
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static/')
+MEDIA_URL = 'static/'
+#会话的序列化解析
+SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
+CACHES = {
+ "default": {
+ "BACKEND": "django_redis.cache.RedisCache",
+	#选中的数据库
+ "LOCATION": "redis://127.0.0.1:6379/1",
+ "OPTIONS": {
+ "CLIENT_CLASS": "django_redis.client.DefaultClient",
+	#"PASSWORD":密码
+ }
+ }
+}
+

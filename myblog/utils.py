@@ -1,6 +1,6 @@
 import random, string
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
-
+from django.core.cache import cache
 
 def get_random_char(count=4):
     ran = string.ascii_lowercase + string.digits
@@ -34,3 +34,4 @@ def create_code():
     # 保存
     # img.save(''.join(code)+'.jpg','jpeg')
     return img, code
+

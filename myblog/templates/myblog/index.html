@@ -3,26 +3,34 @@
     主页
 {% endblock %}
 {% block blogmain %}
- <div class="blog-post">
-                <h2 class="blog-post-title">{{ article.title }}</h2>
-                <p class="blog-post-meta"> {{ article.publish_date }}</p>
-                <p>
-                    {{ article.content | safe }}
-                </p>
+    {% load static %}
 
-            </div><!-- /.blog-post -->
- {% if has_prev %}
-     上一篇：
-    <a href="{% url 'myblog:articledetail' blog_prev.id %}" rel="prev" title="{{ blog_prev.title }}">
-        <i class="fa fa-chevron-left"></i> {{ blog_prev.title }}
-    </a>
-{% endif %}
-{% if has_next %}
-    下一篇：
-     <a href="{% url 'myblog:articledetail' blog_next.id %}" rel="next" title="{{ blog_next.title }}">
-        {{ blog_next.title }} <i class="fa fa-chevron-right"></i>
-     </a>
-{% endif %}
+
+    {% if msg %}
+        <div class="blog-post">
+            <h2 class="blog-post-title">{{ article.title }}</h2>
+            <p class="blog-post-meta"> {{ article.publish_date }}</p>
+            <p>
+                {{ article.content | safe }}
+            </p>
+
+        </div><!-- /.blog-post -->
+        {% if has_prev %}
+            上一篇：
+            <a href="{% url 'myblog:articledetail' blog_prev.id %}" rel="prev" title="{{ blog_prev.title }}">
+                <i class="fa fa-chevron-left"></i> {{ blog_prev.title }}
+            </a>
+        {% endif %}
+        {% if has_next %}
+            下一篇：
+            <a href="{% url 'myblog:articledetail' blog_next.id %}" rel="next" title="{{ blog_next.title }}">
+                {{ blog_next.title }} <i class="fa fa-chevron-right"></i>
+            </a>
+        {% endif %}
+    {% else %}
+        <p> 您还没有发表文章，赶紧去<a href="{% url 'myblog:addarticle' %}">写</a>一篇吧</p>
+    {% endif %}
+
 
 {% endblock %}
 

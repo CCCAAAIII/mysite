@@ -7,7 +7,7 @@ import os
 class User(models.Model):
 
     id = models.AutoField(primary_key=True)
-    email = models.CharField(max_length=50, unique=True)
+    email = models.CharField(max_length=50, unique=True,verbose_name='邮箱')
     password = models.CharField(max_length=255)
     username = models.CharField(max_length=50)
     avatar = models.ImageField(upload_to=os.path.join('myblog','image'), null=True,default='myblog/image/1.png' )

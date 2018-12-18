@@ -52,7 +52,7 @@
                     <label for="email">Email <span class="text-muted">(Optional)</span></label>
                     <input type="email" class="form-control" id="email" placeholder="you@example.com" name="email"
                            required>
-                    <p id="p"></p>
+                    <p id="p" style="color: red;"></p>
                     <div class="invalid-feedback">
                         Please enter a valid email address for shipping updates.
                     </div>
@@ -70,7 +70,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="headimage">上传头像</label>
-                    <input type="file" name="headimage" id="headimage">
+                    <input type="file" name="headimage" id="headimage" >
                 </div>
                 <hr class="mb-4">
                 <button id='btn_submit' class="btn btn-primary btn-lg btn-block" type="submit">Continue to checkout</button>
@@ -119,7 +119,7 @@
                 }
                 else {
                     $('#btn_submit').attr('disabled',false)
-                    m = 'ok'
+                    m = ''
                 }
 
                 $('#p').text(m)
@@ -131,6 +131,7 @@
 
         })
     })
+
 </script>
 <script>
     // Example starter JavaScript for disabling form submissions if there are invalid fields
