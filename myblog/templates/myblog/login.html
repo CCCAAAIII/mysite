@@ -28,12 +28,14 @@
 </div>
 <div class="row">
     <div class="col-md-12 ">
-        <form class="form-signin" method="post" action="{% url 'myblog:login' %}" >
+{#        <form class="form-signin" method="post" >#}
+       <form class="form-signin" method="post" action="{% url 'myblog:check_username_pwd' %}" enctype="application/x-www-form-urlencoded" >
    {% csrf_token %}
 
     <img class="mb-4" src="{% static 'myblog/image/bootstrap-solid.svg' %}" alt="" width="72" height="72">
     <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
     <label for="inputEmail" class="sr-only">Email address</label>
+
     <input type="email" id="inputEmail" name = "e" class="form-control" placeholder="Email address" required autofocus>
     <label for="inputPassword" class="sr-only">Password</label>
     <input type="password" name="pwd" id="inputPassword" class="form-control" placeholder="Password" required>
@@ -41,11 +43,85 @@
 {#        <label>#}
 {#            <input type="checkbox" value="remember-me"> Remember me#}
 {#        </label>#}
-{#    </div>#}
-    <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+{#    </div><button id="click">click</button>#}
+           <p id="p1"></p>
+           <p id="p2"></p>
+    <button class="btn btn-lg btn-primary btn-block" id="btn_submit" >Sign in</button>
+{#    <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>#}
     <p class="mt-5 mb-3 text-muted">&copy; 2017-2018</p>
 </form>
     </div>
+
+
+    <script src="{% static 'myblog/js/jquery-2.1.4.js' %}"></script>
+    <script src="{% static 'myblog/js/bootstrap.min.js' %}"></script>
+    <script>
+ $('#btn_submit').on('click',function () {
+     $.ajax({
+         url:'/myblog/check_username_pwd/',
+         type:'POST',
+         dataType:'JSON',
+         data:{'e':$('#inputEmail').val(),
+          'pwd':$('#inputPassword').val()},
+         success:function (data) {
+             if (data.msg=='1')
+                 location.href='/myblog/index/'
+             else if(data.msg=='456'){
+                    alert('pwd error')
+                   $('#p1').text(data.msg)
+             }
+             else{
+                     alert('user not exist')
+
+             }
+             {#$('p1').text(data.msg)#}
+        {#alert(data[1]['fields']['title'])#}
+
+             {#alert(data.msg)#}
+         }
+
+     })
+     return false
+ })
+</script>
+{#    <script>#}
+{# $('#btn_submit').on('click',function () {#}
+{#     $.ajax({#}
+{#         url:'/myblog/check_username_pwd/',#}
+{#         type:'POST',#}
+{#         dataType:'JSON',#}
+{#         success:function (data) {#}
+{#        alert('CC')#}
+{#         }#}
+{#     })#}
+{# })#}
+{#</script>#}
+{#   <script>#}
+{##}
+{#    $(function () {#}
+{#        $("#inputPassword").bind('keyup', function () {#}
+{##}
+{#            email = $("#e").val()#}
+{#            console.log(email)#}
+{#            csrf = $("[name='csrfmiddlewaretoken']").val();#}
+{#            $.post(#}
+{#                '/myblog/check_username_pwd/',#}
+{#                {#}
+{##}
+{#                 'csrfmiddlewaretoken': csrf,#}
+{#                  'e':$('#inputEmail').val(),#}
+{#                    'pwd':$('#inputPassword').val(),#}
+{#            },#}
+{#                function (data) {#}
+{#                $('p1').text(data.msg)#}
+{#                }#}
+{#            )#}
+{#            return false#}
+{#        })#}
+{#    })#}
+{##}
+{#</script>#}
+
 </div>
 </div>
 

@@ -14,6 +14,7 @@ from django.core.serializers import serialize
 from django.db import transaction
 from .forms import LoginForm
 from django.forms.models import model_to_dict
+from django.core.cache import cache
 
 
 # Create your views here.
@@ -33,15 +34,17 @@ def logincheck(func, *args, **kwargs):
     return wrapper
 
 
-
 # @login_required(login_url='/myblog/login/')
-@logincheck
+# @logincheck
 def index(request):
     # print(request.session['user'].id)
     print(request.session['email'])
     id = request.session['id']
     print(id)
     lastarticle = Article.objects.filter(user_id=id, is_delete=False).order_by('pub_date').last()
+    # cache.set('article',lastarticle)
+    # print(cache.get('article'),'11111111111')
+
     print(lastarticle)
     # 实现博客上一篇与下一篇功能
     has_prev = False
@@ -70,43 +73,31 @@ def index(request):
                   {'article': lastarticle, 'blog_prev': blog_prev, 'blog_next': blog_next, 'has_prev': has_prev,
                    'has_next': has_next, 'msg': msg})
 
+@csrf_exempt
+def check_username_pwd(request):
+    email = request.POST.get('e')
+    user = User.objects.filter(email=email)
+    pwd = request.POST.get('pwd').strip()
+    if len(user) > 0:
+        u = user[0]
+        if check_password(pwd, u.password):
+            request.session['user'] = model_to_dict(u)
+            print(request.session['user'])
+            request.session['email'] = u.email
+            request.session['id'] = u.id
+            request.session['username'] = u.username
 
-def login(request):
-    if request.method == 'POST':
-        email = request.POST.get('e').strip()
-        pwd = request.POST.get('pwd').strip()
-
-        print(email, pwd)
-        try:
-            u = User.objects.get(email=email)
-            if u is not None:
-                if check_password(pwd, u.password):
-                    # print(u, u.id, u.email, u.password)
-                    # u1 = serialize('json',[u,])
-                    # print(type(u1))
-                    # request.session['user']=model_to_dict(u)
-                    request.session['user'] = model_to_dict(u)
-                    print(request.session['user'])
-                    request.session['email'] = u.email
-                    request.session['id'] = u.id
-                    request.session['username'] = u.username
-
-                    request.session.set_expiry(0)
-                    return redirect(reverse('myblog:index'))
-                else:
-                    print('pwd error')
-                    return redirect(reverse('myblog:loginfault'))
-
-            else:
-                print('user not exist')
-                return redirect(reverse('myblog:login'))
-
-        except Exception as e:
-            print(e)
-            return redirect(reverse('myblog:login'))
+            request.session.set_expiry(0)
+            return JsonResponse({'msg': '1'})
+        else:
+            return JsonResponse({'msg': '456'})
 
     else:
-        return render(request, 'myblog/login.html')
+        return JsonResponse({'msg': '123'})
+
+
+def login(request):
+    return render(request, 'myblog/login.html')
 
 
 def loginfault(request):
@@ -140,8 +131,9 @@ def register(request):
                 u = User(username=username, email=email, password=password)
                 u.save()
                 return redirect(reverse('myblog:registersuccess'))
+
         except Exception as e:
-            print('eeeeeee',e)
+            print('eeeeeee', e)
             print('iiiiiiiiiiiiii111  ', head_image)
 
             return redirect(reverse('myblog:registerfault'))
@@ -275,11 +267,34 @@ def search_articles(request):
 
 @csrf_exempt
 def test(request):
-    if request.method == 'POST':
-        articles = Article.objects.all()
-        articles = serialize('json', articles)
-        return HttpResponse(articles)
-    return render(request, 'myblog/testajax.html')
+    email = request.POST.get('e')
+    user = User.objects.filter(email=email)
+    pwd = request.POST.get('pwd').strip()
+    if (len(user) > 0):
+        u = user[0]
+        if check_password(pwd, u.password):
+            request.session['user'] = model_to_dict(u)
+            print(request.session['user'])
+            request.session['email'] = u.email
+            request.session['id'] = u.id
+            request.session['username'] = u.username
+
+            request.session.set_expiry(0)
+            return JsonResponse({'msg': '1'})
+        else:
+            return JsonResponse({'msg': '456'})
+
+    else:
+        return JsonResponse({'msg': '123'})
+
+
+# @csrf_exempt
+# def test(request):
+#     if request.method == 'POST':
+#         articles = Article.objects.all()
+#         articles = serialize('json', articles)
+#         return HttpResponse(articles)
+#     return render(request, 'myblog/testajax.html')
 
 
 # @transaction.Atomic
