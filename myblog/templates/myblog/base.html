@@ -14,10 +14,12 @@
 
     <!-- Bootstrap core CSS -->
     <link href="{% static 'myblog/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
     <link href="https://fonts.googleapis.com/css?family=Playfair+Display:700,900" rel="stylesheet">
     <link href="{% static 'myblog/css/blog.css' %}" rel="stylesheet">
+
 </head>
 
 <body>
@@ -35,6 +37,8 @@
                     {% if request.session.id is not None %}
 
                     <a class="btn btn-sm btn-outline-secondary" href="{% url 'myblog:logout' %}">logout</a>
+                    <a class="btn btn-sm btn-outline-secondary" href="{% url 'myblog:updateinfo' %}"><i class="fa fa-cog"></i></a>
+
                     {% endif %}
 
                 </div>
@@ -68,13 +72,22 @@
         <aside class="col-md-4 blog-sidebar">
         <div>
 {#          <img src="{% url 'myblog:showimage' %}">#}
-            <img src="/static/{{ request.session.user.avatar }}" >
         </div>
             <div class="p-3 mb-3 bg-light rounded">
-                <ul>
+<ul  style="list-style: none ">
+    <li>
+         <img src="/static/{{ request.session.user.avatar }}" class="rounded-circle">
+</li>
+    </li>
+</ul>
+                <ul style="list-style: none ">
+
+                    <li >
+                        <a href="{% url 'myblog:addarticle' %}"><i class="fa fa-pencil"></i>&nbsp;&nbsp;写文章</a>
+
+                    </li>
                     <li>
-                        <a href="{% url 'myblog:addarticle' %}">写文章</a>
-                        <a href="{% url 'myblog:showarticlelist' %}">查看文章列表</a>
+                         <a href="{% url 'myblog:showarticlelist' %}"><i class="fa fa-reorder"></i>&nbsp;&nbsp;查看文章列表</a>
                     </li>
                 </ul>
                 <div class="p-3">

@@ -15,8 +15,8 @@ from django.db import transaction
 from .forms import LoginForm
 from django.forms.models import model_to_dict
 from django.core.cache import cache
-
-
+from django.core.paginator import Paginator
+from django.conf import settings
 # Create your views here.
 def home(request):
     return render(request, 'myblog/home.html')
@@ -25,7 +25,7 @@ def home(request):
 def logincheck(func, *args, **kwargs):
     def wrapper(request):
         is_login = request.session.get('email')
-        print(is_login)
+        # print(is_login)
         if is_login:
             return func(request)
         else:
@@ -35,17 +35,17 @@ def logincheck(func, *args, **kwargs):
 
 
 # @login_required(login_url='/myblog/login/')
-# @logincheck
+@logincheck
 def index(request):
     # print(request.session['user'].id)
-    print(request.session['email'])
+    # print(request.session['email'])
     id = request.session['id']
-    print(id)
+    # print(id)
     lastarticle = Article.objects.filter(user_id=id, is_delete=False).order_by('pub_date').last()
     # cache.set('article',lastarticle)
     # print(cache.get('article'),'11111111111')
 
-    print(lastarticle)
+    # print(lastarticle)
     # 实现博客上一篇与下一篇功能
     has_prev = False
     has_next = False
@@ -57,8 +57,8 @@ def index(request):
         pre1 = Article.objects.filter(user_id=id, is_delete=False, id__lt=lastarticle.id)
         nex1 = Article.objects.filter(user_id=id, is_delete=False, id__gt=lastarticle.id)
         # pre = pre1.first()
-        print(pre1)
-        print(len(nex1))
+        # print(pre1)
+        # print(len(nex1))
         if len(pre1) != 0:
             has_prev = True
             blog_prev = pre1.last()
@@ -66,8 +66,8 @@ def index(request):
         if len(nex1) != 0:
             has_next = True
             blog_next = nex1.first()
-        print(blog_prev)
-        print(blog_next)
+        # print(blog_prev)
+        # print(blog_next)
 
     return render(request, 'myblog/index.html',
                   {'article': lastarticle, 'blog_prev': blog_prev, 'blog_next': blog_next, 'has_prev': has_prev,
@@ -82,7 +82,7 @@ def check_username_pwd(request):
         u = user[0]
         if check_password(pwd, u.password):
             request.session['user'] = model_to_dict(u)
-            print(request.session['user'])
+            # print(request.session['user'])
             request.session['email'] = u.email
             request.session['id'] = u.id
             request.session['username'] = u.username
@@ -123,7 +123,7 @@ def register(request):
             password = make_password(password)
             try:
                 head_image = request.FILES['headimage']
-                print(head_image)
+                # print(head_image)
                 u = User(username=username, email=email, password=password, avatar=head_image)
                 u.save()
                 return redirect(reverse('myblog:registersuccess'))
@@ -133,8 +133,8 @@ def register(request):
                 return redirect(reverse('myblog:registersuccess'))
 
         except Exception as e:
-            print('eeeeeee', e)
-            print('iiiiiiiiiiiiii111  ', head_image)
+            # print('eeeeeee', e)
+            # print('iiiiiiiiiiiiii111  ', head_image)
 
             return redirect(reverse('myblog:registerfault'))
     else:
@@ -150,10 +150,25 @@ def registersuccess(request):
     return render(request, 'myblog/registersuccess.html')
 
 
-def showarticlelist(request):
+def showarticlelist(request,pagenow):
+    # print(pagenow,type(pagenow))
+    if pagenow == '':
+        pagenow = 1
+    # 从配置中读取每页显示的条数
+    page_size = settings.PAGESIZE
+
+    # 构建Paginator 对象
+
     id = request.session['id']
     article_list = Article.objects.filter(user__id=id, is_delete=False)
-    return render(request, 'myblog/showarticlelist.html', {'article_list': article_list})
+
+    paginator = Paginator(article_list,page_size)
+    # 获取分页对象的列表
+    plistcontent = paginator.page(pagenow)
+    # 获取所有页码信息
+    plist = paginator.page_range
+    return render(request, 'myblog/showarticlelist.html', {'pagenow':int(pagenow),'plistcontent':plistcontent,'plist':plist})
+    # return render(request, 'myblog/showarticlelist.html', {'article_list': article_list})
 
 
 @logincheck
@@ -181,7 +196,7 @@ def addsuccess(request):
 
 
 def articledetail(request, id):
-    print(id)
+    # print(id)
     try:
         article = Article.objects.get(id=id)
         user_id = request.session['id']
@@ -270,11 +285,11 @@ def test(request):
     email = request.POST.get('e')
     user = User.objects.filter(email=email)
     pwd = request.POST.get('pwd').strip()
-    if (len(user) > 0):
+    if len(user) > 0:
         u = user[0]
         if check_password(pwd, u.password):
             request.session['user'] = model_to_dict(u)
-            print(request.session['user'])
+            # print(request.session['user'])
             request.session['email'] = u.email
             request.session['id'] = u.id
             request.session['username'] = u.username
@@ -314,3 +329,8 @@ def formtest(request):
 def logout(request):
     request.session.flush()
     return redirect(reverse('myblog:login'))
+def updateinfo(request):
+    if request.method=='POST':
+        pass
+    else:
+        return render(request,'myblog/')

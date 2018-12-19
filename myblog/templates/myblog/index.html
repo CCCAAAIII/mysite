@@ -4,7 +4,7 @@
 {% endblock %}
 {% block blogmain %}
     {% load static %}
-
+{#<i class="icon-edit"></i>#}
 
     {% if msg %}
         <div class="blog-post">
@@ -18,13 +18,13 @@
         {% if has_prev %}
             上一篇：
             <a href="{% url 'myblog:articledetail' blog_prev.id %}" rel="prev" title="{{ blog_prev.title }}">
-                <i class="fa fa-chevron-left"></i> {{ blog_prev.title }}
+              {{ blog_prev.title }}
             </a>
         {% endif %}
         {% if has_next %}
             下一篇：
             <a href="{% url 'myblog:articledetail' blog_next.id %}" rel="next" title="{{ blog_next.title }}">
-                {{ blog_next.title }} <i class="fa fa-chevron-right"></i>
+                {{ blog_next.title }}
             </a>
         {% endif %}
     {% else %}

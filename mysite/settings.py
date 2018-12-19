@@ -151,3 +151,5 @@ CACHES = {
  }
 }
 
+# 分页设置
+PAGESIZE = 2

@@ -3,7 +3,8 @@
 articledetail
 {% endblock %}
 {% block blogmain %}
-
+ <td><a href="{% url 'myblog:articleedit' article.id %}"><i class="fa fa-edit" title="编辑"></i></a></td>
+       <td><a href="{% url 'myblog:articledelete' article.id %}" onclick="return confirm('确认删除{{ article.title }}')"><i class="fa fa-trash-o" title="删除"></i></a></td>
 <h1>{{ article.title }}</h1>
 <small>
     {{ article.pub_date }}
@@ -16,13 +17,13 @@ articledetail
  {% if has_prev %}
      上一篇：
     <a href="{% url 'myblog:articledetail' blog_prev.id %}" rel="prev" title="{{ blog_prev.title }}">
-        <i class="fa fa-chevron-left"></i> {{ blog_prev.title }}
+    {{ blog_prev.title }}
     </a>
 {% endif %}
 {% if has_next %}
     下一篇：
      <a href="{% url 'myblog:articledetail' blog_next.id %}" rel="next" title="{{ blog_next.title }}">
-        {{ blog_next.title }} <i class="fa fa-chevron-right"></i>
+        {{ blog_next.title }}
      </a>
 {% endif %}
 {% endblock %}

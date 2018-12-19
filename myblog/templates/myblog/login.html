@@ -44,8 +44,8 @@
 {#            <input type="checkbox" value="remember-me"> Remember me#}
 {#        </label>#}
 {#    </div><button id="click">click</button>#}
-           <p id="p1"></p>
-           <p id="p2"></p>
+           <p id="p1" style="color: red"></p>
+
     <button class="btn btn-lg btn-primary btn-block" id="btn_submit" >Sign in</button>
 {#    <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>#}
     <p class="mt-5 mb-3 text-muted">&copy; 2017-2018</p>
@@ -61,18 +61,19 @@
          url:'/myblog/check_username_pwd/',
          type:'POST',
          dataType:'JSON',
-         data:{'e':$('#inputEmail').val(),
-          'pwd':$('#inputPassword').val()},
+         data:{
+             'e':$('#inputEmail').val(),
+          'pwd':$('#inputPassword').val()
+         },
          success:function (data) {
              if (data.msg=='1')
                  location.href='/myblog/index/'
              else if(data.msg=='456'){
-                    alert('pwd error')
-                   $('#p1').text(data.msg)
+                    {#alert('pwd error')#}
+                   $('#p1').text('pwd error')
              }
              else{
-                     alert('user not exist')
-
+                    $('#p1').text('user not exist')
              }
              {#$('p1').text(data.msg)#}
         {#alert(data[1]['fields']['title'])#}

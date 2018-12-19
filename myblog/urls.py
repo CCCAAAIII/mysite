@@ -10,6 +10,7 @@ urlpatterns = [
     url(r'^registerfault/$', views.registerfault, name='registerfault'),
     url(r'^registersuccess/$', views.registersuccess, name='registersuccess'),
     url(r'^addarticle/$',views.addarticle,name='addarticle'),
+    url(r'^showarticlelist(?P<pagenow>[0-9]*)/$',views.showarticlelist,name='showarticlelist'),
     url(r'^showarticlelist/$',views.showarticlelist,name='showarticlelist'),
     url(r'^addsuccess/$',views.addsuccess,name='addsuccess'),
     url(r'^articledetail/(\d+)/$',views.articledetail,name='articledetail'),
@@ -21,5 +22,6 @@ urlpatterns = [
     url(r'^showimage/$',views.showimage,name='showimage'),
     url(r'^logout/$',views.logout,name='logout'),
     url(r'^checkusername/$',views.checkusername,name='checkusername'),
-    url(r'^check_username_pwd/$',views.check_username_pwd,name='check_username_pwd')
+    url(r'^check_username_pwd/$',views.check_username_pwd,name='check_username_pwd'),
+    url(r'^updateinfo/$',views.updateinfo,name='updateinfo')
 ]

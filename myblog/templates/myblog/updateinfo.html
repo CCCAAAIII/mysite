@@ -1,0 +1,9 @@
+{% extends 'myblog/base.html' %}
+{% block title %}
+updateinfo
+{% endblock %}
+{% block blogmain %}
+<form action="{% url 'myblog:updateinfo' %}" method="post" enctype="application/x-www-form-urlencoded">
+
+</form>
+{% endblock %}

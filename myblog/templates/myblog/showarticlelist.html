@@ -14,17 +14,27 @@
     </tr>
   </thead>
   <tbody>
-      {% for i in article_list %}
+{#      {% for i in article_list %}#}
+      {% for i in plistcontent %}
     <tr>
       <th scope="row">{{ i.id }}</th>
       <td><a href="{% url 'myblog:articledetail' i.id %}">{{ i.title}}</a></td>
      <td>{{ i.pub_date }}</td>
-       <td><a href="{% url 'myblog:articleedit' i.id %}">edit</a></td>
-       <td><a href="{% url 'myblog:articledelete' i.id %}">delete</a></td>
+       <td><a href="{% url 'myblog:articleedit' i.id %}"><i class="fa fa-edit" title="编辑"></i></a></td>
+       <td><a href="{% url 'myblog:articledelete' i.id %}" onclick="return confirm('确认删除{{ article.title }}')" ><i class="fa fa-trash-o" title="删除"></i></a></td>
     </tr>
   </tbody>
       {% endfor %}
 </table>
+{% for p in plist %}
+    {% if p == pagenow %}
+
+       &nbsp;&nbsp; {{ p }}&nbsp;&nbsp;
+    {% else %}
+        <a href="{% url 'myblog:showarticlelist' p %}">{{ p }}</a>
+    {% endif %}
+
+{% endfor %}
 
 
 <a href="{% url 'myblog:index' %}"> 返回</a>
